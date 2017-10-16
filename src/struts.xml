@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <constant name="struts.devMode" value="true"/>
+
+    <!--设置上传文件大小:10MB-->
+    <constant name="struts.multipart.maxSize" value="10485760"/>
+
+    <package name="day04" extends="struts-default">
+
+        <!--定义成功的全局结果视图-->
+        <global-results>
+            <result name="success">success.jsp</result>
+        </global-results>
+
+        <action name="singleUpload"
+                class="com.lanou.action.MyUploadFileAction"
+                method="singleUpload">
+
+            <!--重写默认拦截器栈,修改默认拦截栈中的某个拦截器的属性-->
+            <interceptor-ref name="defaultStack">
+                <!--重写设置上传文件的大小限制-->
+                <param name="fileUpload.maximumSize">10485760</param>
+                <!--重新设置上传文件的后缀,多个用逗号隔开-->
+                <param name="fileUpload.allowedExtensions">.png,.jpg,.jpeg</param>
+            </interceptor-ref>
+            <result name="input">/index.jsp</result>
+        </action>
+        <!--下载-->
+        <action name="download"
+                class="com.lanou.action.MyDownloadAction"
+                method="download">
+            <result name="input">/index.jsp</result>
+            <!--文件下载的type对应stream-->
+            <result name="success" type="stream">
+                <!--动作类中输入流的属性名-->
+                <param name="inputStream">inputStream</param>
+                <!--指定浏览器以何种形式下载,以及文件名称-->
+                <param name="contentDisposition">attachment;filename=${fileName}</param>
+                <!--指定下载的文件的MIME类型-->
+                <param name="contentType">application/octet-stream</param>
+            </result>
+        </action>
+
+        <action name="login"
+                class="com.lanou.action.OgnlAction">
+
+        </action>
+    </package>
+</struts>
